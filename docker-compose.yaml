@@ -1,0 +1,19 @@
+services:
+
+  opencode:
+    container_name: opencode
+    pull_policy: never
+    image: opencode
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./opencode/opencode.jsonc:/home/opencode/.config/opencode/opencode.jsonc:ro
+      - ./opencode/AGENTS.md:/home/opencode/.config/opencode/AGENTS.md:ro
+      - ./opencode/skills:/home/opencode/.config/opencode/skills:ro
+      - ./opencode/agents:/home/opencode/.config/opencode/agents:ro
+      - ./opencode/plugins:/home/opencode/.config/opencode/plugins:ro
+      - C:/git/opencode-workspace:/workspace
+    stdin_open: true
+    tty: true
+    command: [ "opencode" ]
