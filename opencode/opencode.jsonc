@@ -25,21 +25,19 @@
   },
   "lsp": {
     "csharp": {
-      // "command": ["dnx", "roslyn-language-server", "--yes", "--prerelease", "--", "--stdio", "--autoLoadProjects"],
       "command": ["roslyn-language-server", "--stdio", "--autoLoadProjects"],
       "extensions": [".cs", ".razor", ".cshtml"]
     }
   },
   "model": "opencode/deepseek-v4-flash-free",
   "agent": {
-    // the default "build" & "plan" agents are disabled, because their default implementation conflicts with some of my configuration
-    // for example, if I put "do A" into my global AGENTS.md, but the default agent has "do B" in their default config, it wins over my config like half the time
     "build": {
-      "disable": true
+      "disable": false
     },
     "plan": {
       "disable": false
     }
   },
+  "subagent_depth": 2,
   "default_agent": "dotnet-planner"
 }
