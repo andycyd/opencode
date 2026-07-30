@@ -31,12 +31,15 @@ RUN mkdir -p /home/opencode/.local/share/opencode \
     && chown -R opencode:opencode /home/opencode
 
 # SWITCH TO NON-ROOT USER
-# AND SET WORKING DIRECTORY
 
 USER opencode
 
+# SET UP LSP / LANGUAGE SERVER
 # https://github.com/dotnet/roslyn/blob/main/docs/roslyn-language-server-copilot-plugin.md
+
 ENV PATH="/home/opencode/.dotnet/tools:${PATH}"
 RUN dotnet tool install -g roslyn-language-server --prerelease
+
+# SET WORKING DIRECTORY
 
 WORKDIR /workspace

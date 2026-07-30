@@ -1,28 +1,54 @@
-# Self-hosted LLMs for development, on Windows
+# What is this
 
-This readme aims to teach you how to:
-- self-host LLM models
-- configure an agentic coding helper via opencode
+This repository is a rough demo version of my opencode setup. 
 
-## Installation
+It is not meant to be perfect, it's just meant to illustrate the idea behind the workflow.
 
-### LM Studio
+# Setup
+
+I run this in a Docker container on an Ubuntu server in my WSL, and use it via [Windows Terminal](https://aka.ms/terminal) from Windows 11.
+
+The rest of this guide assumes you have WSL installed. ([docs](https://learn.microsoft.com/en-us/windows/wsl/install))
+
+## Configure
+
+Change what folder is being mounted to `/workspace` in the `docker-compose.yaml` file:
+
+```yaml
+services:
+
+  opencode:
+    // ...
+    volumes:
+      // ...
+      - C:/git/your-workspace:/workspace
+```
+
+In the context of this demo, this is meant to be the folder containing your dotnet solution.
+
+## Build & run
+
+```bash
+docker compose build && docker compose run --remove-orphans opencode
+```
+
+# Self-hosting LLMs
+
+This section will show you how to self-host LLMs on Windows, via LM Studio.
+
+As a side note, this should probably be containerized too, but I just tried this as an experiment and not willing to put more time into it at the moment.
+
+## LM Studio
 
 LM Studio will be used to download, configure and run the LLM models of your choice. 
 
 1. Install: https://lmstudio.ai/
 2. Download a model, for example `mistralai/devstral-small-2-2512`
+3. In `Developer > Local server`, run the server, and load your model
 
-### Windows Sub-system for Linux
+You can also download models from [Hugging Face](https://huggingface.co/), but do not forget to read the readmes, and properly configure settings. This guide will not go into details about this.
 
-WSL will be used to run 
-
-##### Install WSL ([docs](https://learn.microsoft.com/en-us/windows/wsl/install))
-
-```bash
-wsl --install
-```
-##### Configure networking
+## Configure networking in WSL
 
 This is required to be able to access LM Studio via `localhost` from inside WSL.
 
@@ -71,25 +97,43 @@ You should see something like:
 }
 ```
 
-### opencode
+At this point, you could connect from opencode by typing `/connect`, and searching for `LMStudio`. Enter literally anything when prompted for the API key. But I do recommend setting this up via the configuration file.
 
-##### Install inside WSL ([docs](https://opencode.ai/docs/windows-wsl)):
+### Connect from opencode
 
-```bash
-curl -fsSL https://opencode.ai/install | bash
+#### Via the configuration file
+
+Edit the `opencode.jsonc` file, and add LM Studio as a provider, including any models you might be running in it:
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "lmstudio": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "LM Studio (local)",
+      "options": {
+        "baseURL": "http://host.docker.internal:1234/v1"
+      },
+      "models": {
+        "qwen/qwen3.5-9b": {
+          "name": "qwen/qwen3.5-9b (local)"
+        },
+        "qwen/qwen3.6-27b": {
+          "name": "qwen/qwen3.6-27b (local)"
+        },
+        "qwen3.6-35b-a3b-mtp": {
+          "name": "qwen3.6-35b-a3b-mtp (local)"
+        },
+        "mistralai/devstral-small-2-2512": {
+          "name": "mistralai/devstral-small-2-2512 (local)"
+        }
+      }
+    }
+  },
+  // etc
 ```
-##### Configure LM Studio as a provider
 
-Run opencode:
+You can now select models via the `/model` command.
 
-```bash
-opencode
-```
-
-Connect to a provider by typing `/connect`, and search for `LMStudio`. Enter `anything` when prompted for the API key.
-
-```bash
-/connect
-```
-
-You can prompt now. Regardless of what model you select, whatever is loaded in your LM Studio server will answer.
+If you enable "Just-in-Time Model Loading" in LM Studio (under `Developer > Local server`), it will automatically load whatever model is selected in opencode.

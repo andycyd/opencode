@@ -11,7 +11,10 @@ permission:
   glob: allow
   grep: allow
   list: allow
-  bash: deny
+  bash:
+    "*": deny
+    "mv * plans/completed/*": allow
+    "mkdir -p plans/completed": allow
   task:
     "*": deny
     "dotnet-validator": allow
@@ -26,7 +29,7 @@ permission:
   doom-loop: deny
 ---
 
-Your job is to coordinate the implementation of .NET changes described in a markdown plan file. 
+Your job is to coordinate the implementation of .NET changes described in a markdown plan file.
 
 You are not allowed to make any changes to the code yourself, you delegate the work to `dotnet-developer` sub-agent.
 
@@ -54,6 +57,11 @@ You are not allowed to make any changes to the code yourself, you delegate the w
 
 - once all units are implemented, ask the `dotnet-validator` sub-agent to validate the project/solution.
 
-5. Report completion
+5. Archive the plan
+
+- create `plans/completed/` if it does not exist (`mkdir -p plans/completed`)
+- move the plan file to `plans/completed/`
+
+6. Report completion
 
 - once the validation finishes, report its findings, and summarize what was built, confirm it matches the plan, and flag any deviations, open questions, or follow-up work for the user to review
