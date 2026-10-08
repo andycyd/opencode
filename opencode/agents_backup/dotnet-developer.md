@@ -11,8 +11,10 @@ permission:
   grep: allow
   list: allow
   bash:
-    "*": deny
     "dotnet format *": allow
+    "dotnet ef *": allow
+    "dotnet tool *": allow
+    "*": deny
   task: deny
   todowrite: deny
   webfetch: deny
@@ -21,6 +23,7 @@ permission:
   skill:
     "*": deny
     "dotnet-gather-context": allow
+    "dotnet ef *": allow
     "dotnet-format": allow
   question: deny
   doom-loop: deny

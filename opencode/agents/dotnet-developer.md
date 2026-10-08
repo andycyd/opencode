@@ -7,7 +7,11 @@ permission:
   glob: allow
   grep: allow
   list: allow
-  bash: deny
+  bash:
+    "*": deny
+    "dotnet format *": allow
+    "dotnet ef *": allow
+    "dotnet tool *": allow
   task: deny
   todowrite: deny
   webfetch: deny
